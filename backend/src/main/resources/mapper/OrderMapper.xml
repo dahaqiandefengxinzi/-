@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.shop.mapper.OrderMapper">
+    <resultMap id="OrderWithItemsMap" type="com.example.shop.entity.Order">
+        <id column="id" property="id"/>
+        <result column="order_sn" property="orderSn"/>
+        <result column="user_id" property="userId"/>
+        <result column="total_amount" property="totalAmount"/>
+        <result column="pay_amount" property="payAmount"/>
+        <result column="status" property="status"/>
+        <result column="payment_type" property="paymentType"/>
+        <result column="shipping_address" property="shippingAddress"/>
+        <result column="shipping_company" property="shippingCompany"/>
+        <result column="shipping_number" property="shippingNumber"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="pay_time" property="payTime"/>
+        <result column="delivery_time" property="deliveryTime"/>
+        <result column="receive_time" property="receiveTime"/>
+        <collection property="orderItems" ofType="com.example.shop.entity.OrderItem">
+            <id column="item_id" property="id"/>
+            <result column="item_order_id" property="orderId"/>
+            <result column="item_product_id" property="productId"/>
+            <result column="item_product_name" property="productName"/>
+            <result column="item_product_price" property="productPrice"/>
+            <result column="item_quantity" property="quantity"/>
+            <result column="item_product_image" property="productImage"/>
+        </collection>
+    </resultMap>
+
+    <select id="selectOrderPage" resultMap="OrderWithItemsMap">
+        SELECT o.*, 
+               oi.id as item_id, oi.order_id as item_order_id, oi.product_id as item_product_id,
+               oi.product_name as item_product_name, oi.product_price as item_product_price,
+               oi.quantity as item_quantity, oi.product_image as item_product_image
+        FROM `order` o
+        LEFT JOIN order_item oi ON o.id = oi.order_id
+        WHERE o.user_id = #{userId}
+        <if test="status != null">
+            AND o.status = #{status}
+        </if>
+        ORDER BY o.create_time DESC
+    </select>
+</mapper>

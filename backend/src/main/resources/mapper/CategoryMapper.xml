@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.shop.mapper.CategoryMapper">
+    <resultMap id="CategoryTreeMap" type="com.example.shop.entity.Category">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="parent_id" property="parentId"/>
+        <result column="level" property="level"/>
+        <result column="sort" property="sort"/>
+        <result column="icon" property="icon"/>
+        <result column="status" property="status"/>
+        <collection property="children" ofType="com.example.shop.entity.Category">
+            <id column="child_id" property="id"/>
+            <result column="child_name" property="name"/>
+            <result column="child_parent_id" property="parentId"/>
+            <result column="child_level" property="level"/>
+            <result column="child_sort" property="sort"/>
+            <result column="child_icon" property="icon"/>
+            <result column="child_status" property="status"/>
+        </collection>
+    </resultMap>
+
+    <select id="selectCategoryTree" resultMap="CategoryTreeMap">
+        SELECT 
+            c1.id, c1.name, c1.parent_id, c1.level, c1.sort, c1.icon, c1.status,
+            c2.id as child_id, c2.name as child_name, c2.parent_id as child_parent_id,
+            c2.level as child_level, c2.sort as child_sort, c2.icon as child_icon, c2.status as child_status
+        FROM category c1
+        LEFT JOIN category c2 ON c1.id = c2.parent_id
+        WHERE c1.level = 1 AND c1.status = 1
+        ORDER BY c1.sort, c2.sort
+    </select>
+</mapper>

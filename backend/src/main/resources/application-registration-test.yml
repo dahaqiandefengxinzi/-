@@ -1,0 +1,13 @@
+server:
+  address: 127.0.0.1
+spring:
+  datasource:
+    url: ${REGISTRATION_TEST_DATABASE_URL}
+registration:
+  test-key: ${REGISTRATION_TEST_KEY}
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.nologging.NoLoggingImpl
+logging:
+  level:
+    com.example.shop: INFO
